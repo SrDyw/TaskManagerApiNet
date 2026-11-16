@@ -1,2 +1,36 @@
-﻿@TaskManager.Api_HostAddress = http://localhost:5152
+@host = http://localhost:5152
 
+### List tasks (optional filters: state, assignee)
+GET {{host}}/api/tasks?state=Pending
+Accept: application/json
+
+### Get task by id
+GET {{host}}/api/tasks/1
+Accept: application/json
+
+### Create task
+POST {{host}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Prepare sprint demo",
+  "description": "Slides and live walkthrough",
+  "state": "Pending",
+  "assignee": "Ana",
+  "dueDate": "2030-01-15T17:00:00Z"
+}
+
+### Update task
+PUT {{host}}/api/tasks/1
+Content-Type: application/json
+
+{
+  "title": "Prepare sprint demo",
+  "description": "Slides and live walkthrough",
+  "state": "InProgress",
+  "assignee": "Luis",
+  "dueDate": "2030-01-16T17:00:00Z"
+}
+
+### Delete task
+DELETE {{host}}/api/tasks/1

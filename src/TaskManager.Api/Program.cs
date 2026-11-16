@@ -1,7 +1,9 @@
+﻿using System.Text.Json.Serialization;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Api.Data;
 using TaskManager.Api.Mapping;
+using TaskManager.Api.Services;
 using TaskManager.Api.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +15,11 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddMappings();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskDtoValidator>();
 
-builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>());
+builder.Services.AddScoped<ITaskService, TaskService>();
+
+builder.Services
+    .AddControllers(options => options.Filters.Add<ValidationFilter>())
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
