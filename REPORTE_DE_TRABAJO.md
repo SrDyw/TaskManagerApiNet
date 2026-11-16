@@ -31,6 +31,6 @@ La primera versión del mapeo usaba AutoMapper 14.0.0, la última versión gratu
 
 ## Resultado
 
-- **Tiempo**: 35 minutos en total, 15 de construcción y 20 de revisiones y correcciones.
+- **Tiempo**: 45 minutos en total, 15 de construcción y 30 de revisiones, validaciones y pruebas.
 - **Funcionalidad**: CRUD completo de tareas con validaciones y mapeo DTO ⇄ modelo.
-- **Pruebas**: 13 tests (creación, edición, eliminación, mapeo y persistencia), todos pasan.
+- **Pruebas**: 33 tests (creación, edición, eliminación, mapeo, persistencia y manejo de errores), todos pasan.
