@@ -20,6 +20,10 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services
     .AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+// The OpenAPI generator reads these options, so enums are documented as strings too.
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
@@ -27,6 +31,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "TaskManager API v1");
+        options.RoutePrefix = "swagger";
+        options.DocumentTitle = "TaskManager API";
+    });
 
     // Apply pending migrations automatically in development.
     using var scope = app.Services.CreateScope();

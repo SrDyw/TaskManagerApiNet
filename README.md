@@ -7,6 +7,7 @@ MVP REST API for managing tasks, built with .NET 9, ASP.NET Core and EF Core on 
 | Concern     | Library                                   |
 |-------------|-------------------------------------------|
 | Web API     | ASP.NET Core 9 (controllers)              |
+| API docs    | Microsoft.AspNetCore.OpenApi + Swagger UI |
 | Persistence | EF Core 9 + SQL Server                    |
 | Mapping     | Mapster (DTO ⇄ model)                     |
 | Validation  | FluentValidation (global action filter)   |
@@ -46,7 +47,7 @@ dotnet tool run dotnet-ef database update -p src/TaskManager.Api
 dotnet run --project src/TaskManager.Api             # http://localhost:5152
 ```
 
-In the `Development` environment, pending migrations are applied on startup and the OpenAPI document is served at `/openapi/v1.json`.
+In the `Development` environment, pending migrations are applied on startup, the OpenAPI document is served at `/openapi/v1.json` and Swagger UI at [`/swagger`](http://localhost:5152/swagger). Both launch profiles open the browser on `/swagger` when started from Visual Studio, Rider or `dotnet watch`.
 
 ## Tests
 
