@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TaskManager.Api.Models;
+using TaskManager.Api.Validation;
 
 namespace TaskManager.Api.Data;
 
@@ -14,9 +15,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.ToTable("Tasks");
             entity.HasKey(t => t.Id);
 
-            entity.Property(t => t.Title).IsRequired().HasMaxLength(150);
-            entity.Property(t => t.Description).HasMaxLength(1000);
-            entity.Property(t => t.Assignee).IsRequired().HasMaxLength(100);
+            entity.Property(t => t.Title).IsRequired().HasMaxLength(TaskRules.TitleMaxLength);
+            entity.Property(t => t.Description).HasMaxLength(TaskRules.DescriptionMaxLength);
+            entity.Property(t => t.Assignee).IsRequired().HasMaxLength(TaskRules.AssigneeMaxLength);
             entity.Property(t => t.State).HasConversion<string>().HasMaxLength(20).IsRequired();
             entity.Property(t => t.DueDate).IsRequired();
             entity.Property(t => t.CreatedAt).IsRequired();
