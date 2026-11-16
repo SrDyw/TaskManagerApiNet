@@ -23,6 +23,8 @@ MVP REST API for managing tasks, built with .NET 9, ASP.NET Core and EF Core on 
 | `assignee`    | string                               | required, max 100                       |
 | `dueDate`     | DateTime (UTC)                       | required; must be in the future on create |
 
+`state` is the `TaskState` enum. In the database it is an `int` column (`Pending = 0`, `InProgress = 1`, `Done = 2`) with a `CK_Tasks_State` check constraint. The JSON API accepts and returns the names (integers are also accepted on input).
+
 `id`, `createdAt` and `updatedAt` are set by the server. Text fields are trimmed and all dates are stored and returned in UTC.
 
 ## Endpoints

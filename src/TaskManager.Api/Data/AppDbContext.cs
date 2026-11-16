@@ -13,13 +13,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         modelBuilder.Entity<TaskItem>(entity =>
         {
-            entity.ToTable("Tasks");
+            // Only accept integer values defined in the TaskState enum.
+            var stateValues = string.Join(", ", Enum.GetValues<TaskState>().Select(s => (int)s));
+            entity.ToTable("Tasks", table =>
+                table.HasCheckConstraint("CK_Tasks_State", $"[State] IN ({stateValues})"));
             entity.HasKey(t => t.Id);
 
             entity.Property(t => t.Title).IsRequired().HasMaxLength(TaskRules.TitleMaxLength);
             entity.Property(t => t.Description).HasMaxLength(TaskRules.DescriptionMaxLength);
             entity.Property(t => t.Assignee).IsRequired().HasMaxLength(TaskRules.AssigneeMaxLength);
-            entity.Property(t => t.State).HasConversion<string>().HasMaxLength(20).IsRequired();
+            entity.Property(t => t.State).HasConversion<int>().IsRequired();
             entity.Property(t => t.DueDate).IsRequired();
             entity.Property(t => t.CreatedAt).IsRequired();
 

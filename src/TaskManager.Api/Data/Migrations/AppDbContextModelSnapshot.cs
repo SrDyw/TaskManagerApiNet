@@ -45,10 +45,8 @@ namespace TaskManager.Api.Data.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("State")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -64,7 +62,10 @@ namespace TaskManager.Api.Data.Migrations
 
                     b.HasIndex("State");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Tasks_State", "[State] IN (0, 1, 2)");
+                        });
                 });
 #pragma warning restore 612, 618
         }
