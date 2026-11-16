@@ -38,6 +38,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     }
 
     private sealed class UtcDateTimeConverter() : ValueConverter<DateTime, DateTime>(
-        v => v.Kind == DateTimeKind.Utc ? v : v.ToUniversalTime(),
+        v => UtcDateTime.Normalize(v),
         v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 }

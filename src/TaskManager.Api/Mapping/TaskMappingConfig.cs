@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using TaskManager.Api.Data;
 using TaskManager.Api.Dtos;
 using TaskManager.Api.Models;
 
@@ -14,12 +15,14 @@ public class TaskMappingConfig : IRegister
             .Map(dest => dest.Title, src => src.Title.Trim())
             .Map(dest => dest.Description, src => string.IsNullOrWhiteSpace(src.Description) ? null : src.Description.Trim())
             .Map(dest => dest.Assignee, src => src.Assignee.Trim())
+            .Map(dest => dest.DueDate, src => UtcDateTime.Normalize(src.DueDate))
             .Ignore(nameof(TaskItem.Id), nameof(TaskItem.CreatedAt), nameof(TaskItem.UpdatedAt));
 
         config.NewConfig<UpdateTaskDto, TaskItem>()
             .Map(dest => dest.Title, src => src.Title.Trim())
             .Map(dest => dest.Description, src => string.IsNullOrWhiteSpace(src.Description) ? null : src.Description.Trim())
             .Map(dest => dest.Assignee, src => src.Assignee.Trim())
+            .Map(dest => dest.DueDate, src => UtcDateTime.Normalize(src.DueDate))
             .Ignore(nameof(TaskItem.Id), nameof(TaskItem.CreatedAt), nameof(TaskItem.UpdatedAt));
     }
 }

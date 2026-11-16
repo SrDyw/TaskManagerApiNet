@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaskManager.Api.Dtos;
 using TaskManager.Api.Models;
 using TaskManager.Api.Services;
@@ -7,11 +7,10 @@ namespace TaskManager.Api.Controllers;
 
 [ApiController]
 [Route("api/tasks")]
-[Produces("application/json")]
 public class TasksController(ITaskService taskService) : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType<IReadOnlyList<TaskDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<IReadOnlyList<TaskDto>>(StatusCodes.Status200OK, "application/json")]
     public async Task<ActionResult<IReadOnlyList<TaskDto>>> GetAll(
         [FromQuery] TaskState? state,
         [FromQuery] string? assignee,
@@ -22,8 +21,8 @@ public class TasksController(ITaskService taskService) : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    [ProducesResponseType<TaskDto>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<TaskDto>(StatusCodes.Status200OK, "application/json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     public async Task<ActionResult<TaskDto>> GetById(int id, CancellationToken cancellationToken)
     {
         var task = await taskService.GetByIdAsync(id, cancellationToken);
@@ -31,8 +30,8 @@ public class TasksController(ITaskService taskService) : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType<TaskDto>(StatusCodes.Status201Created)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<TaskDto>(StatusCodes.Status201Created, "application/json")]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public async Task<ActionResult<TaskDto>> Create(CreateTaskDto dto, CancellationToken cancellationToken)
     {
         var task = await taskService.CreateAsync(dto, cancellationToken);
@@ -40,9 +39,9 @@ public class TasksController(ITaskService taskService) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [ProducesResponseType<TaskDto>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<TaskDto>(StatusCodes.Status200OK, "application/json")]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     public async Task<ActionResult<TaskDto>> Update(int id, UpdateTaskDto dto, CancellationToken cancellationToken)
     {
         var task = await taskService.UpdateAsync(id, dto, cancellationToken);
@@ -51,7 +50,7 @@ public class TasksController(ITaskService taskService) : ControllerBase
 
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var deleted = await taskService.DeleteAsync(id, cancellationToken);

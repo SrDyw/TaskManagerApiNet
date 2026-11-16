@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace TaskManager.Api.Validation;
 
@@ -8,7 +9,7 @@ namespace TaskManager.Api.Validation;
 /// Runs the registered FluentValidation validator for every action argument
 /// and short-circuits with a 400 ValidationProblem when any rule fails.
 /// </summary>
-public class ValidationFilter(IServiceProvider serviceProvider) : IAsyncActionFilter
+public class ValidationFilter(IServiceProvider serviceProvider, ProblemDetailsFactory problemDetailsFactory) : IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -36,10 +37,10 @@ public class ValidationFilter(IServiceProvider serviceProvider) : IAsyncActionFi
 
         if (!context.ModelState.IsValid)
         {
-            context.Result = new BadRequestObjectResult(new ValidationProblemDetails(context.ModelState)
-            {
-                Status = StatusCodes.Status400BadRequest
-            });
+            // Use the framework factory so the body matches built-in 400s (type, title, traceId).
+            var problem = problemDetailsFactory.CreateValidationProblemDetails(
+                context.HttpContext, context.ModelState, StatusCodes.Status400BadRequest);
+            context.Result = new BadRequestObjectResult(problem);
             return;
         }
 

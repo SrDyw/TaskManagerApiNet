@@ -1,4 +1,5 @@
-using FluentValidation;
+﻿using FluentValidation;
+using TaskManager.Api.Data;
 using TaskManager.Api.Dtos;
 
 namespace TaskManager.Api.Validation;
@@ -23,7 +24,7 @@ public class CreateTaskDtoValidator : AbstractValidator<CreateTaskDto>
 
         RuleFor(x => x.DueDate)
             .NotEmpty().WithMessage("DueDate is required.")
-            .Must(dueDate => dueDate.ToUniversalTime() > timeProvider.GetUtcNow().UtcDateTime)
+            .Must(dueDate => UtcDateTime.Normalize(dueDate) > timeProvider.GetUtcNow().UtcDateTime)
             .WithMessage("DueDate must be in the future.");
     }
 }

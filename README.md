@@ -37,7 +37,20 @@ MVP REST API for managing tasks, built with .NET 9, ASP.NET Core and EF Core on 
 | PUT    | `/api/tasks/{id}` | 200     | 400, 404 |
 | DELETE | `/api/tasks/{id}` | 204     | 404      |
 
-Validation failures return a `ValidationProblemDetails` body with errors per field. See `src/TaskManager.Api/TaskManager.Api.http` for ready-to-run requests.
+### Error handling
+
+Every error response is `application/problem+json` (RFC 9457) with `type`, `title`, `status` and `traceId`:
+
+| Situation | Status |
+|-----------|--------|
+| Invalid field values, malformed JSON, missing body, unknown enum value | 400 (with `errors` per field) |
+| Unknown id, unknown route, non-numeric id | 404 |
+| HTTP method not supported | 405 |
+| Content type other than JSON | 415 |
+| Task modified or deleted by a concurrent request | 409 |
+| Any unexpected failure (e.g. database unavailable) | 500 with a generic message; details are only logged |
+
+Dates without an offset are treated as UTC. See `src/TaskManager.Api/TaskManager.Api.http` for ready-to-run requests.
 
 ## Getting started
 
